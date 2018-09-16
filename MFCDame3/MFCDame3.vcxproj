@@ -183,6 +183,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CGrid.h" />
     <ClInclude Include="MFCDame3.h" />
     <ClInclude Include="MFCDame3Dlg.h" />
     <ClInclude Include="Resource.h" />
@@ -190,6 +191,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CGrid.cpp" />
     <ClCompile Include="MFCDame3.cpp" />
     <ClCompile Include="MFCDame3Dlg.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -203,6 +205,7 @@
     <ResourceCompile Include="MFCDame3.rc" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassDiagram.cd" />
     <None Include="res\MFCDame3.rc2" />
   </ItemGroup>
   <ItemGroup>
