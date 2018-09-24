@@ -376,6 +376,8 @@ void CGrid::RetirePionJeu(int pionID)				// Retire le pion des vecteurs de pions
 			pion_1.ID = i;
 			pion_1.old_x = (i-1) * 2;
 			pion_1.old_y = 0;
+			pion_1.new_x = pion_1.old_x;
+			pion_1.new_y = pion_1.old_y;
 			pion_1.dame = false;
 			pion_1.score = -1000;
 			pion_1.move = -1;																	// move = -1 indique qu'aucun move n'a été fait.  Donc ne pas tenir compte du score.
@@ -389,6 +391,8 @@ void CGrid::RetirePionJeu(int pionID)				// Retire le pion des vecteurs de pions
 			pion_1.ID = i;
 			pion_1.old_x = (i - 6) * 2 + 1;
 			pion_1.old_y = 1;
+			pion_1.new_x = pion_1.old_x;
+			pion_1.new_y = pion_1.old_y;
 			pion_1.dame = false;
 			pion_1.score = -1000;
 			pion_1.move = -1;																	// move = -1 indique qu'aucun move n'a été fait.  Donc ne pas tenir compte du score.
@@ -402,6 +406,8 @@ void CGrid::RetirePionJeu(int pionID)				// Retire le pion des vecteurs de pions
 			pion_1.ID = i;
 			pion_1.old_x = (i - 11) * 2;
 			pion_1.old_y = 2;
+			pion_1.new_x = pion_1.old_x;
+			pion_1.new_y = pion_1.old_y;
 			pion_1.dame = false;
 			pion_1.score = -1000;
 			pion_1.move = -1;																	// move = -1 indique qu'aucun move n'a été fait.  Donc ne pas tenir compte du score.
@@ -415,6 +421,8 @@ void CGrid::RetirePionJeu(int pionID)				// Retire le pion des vecteurs de pions
 			pion_1.ID = i;
 			pion_1.old_x = (i - 16) * 2 + 1;
 			pion_1.old_y = 3;
+			pion_1.new_x = pion_1.old_x;
+			pion_1.new_y = pion_1.old_y;
 			pion_1.dame = false;
 			pion_1.score = -1000;
 			pion_1.move = -1;																	// move = -1 indique qu'aucun move n'a été fait.  Donc ne pas tenir compte du score.
@@ -438,6 +446,10 @@ void CGrid::RetirePionJeu(int pionID)				// Retire le pion des vecteurs de pions
 			pion_1.ID = -i;
 			pion_1.old_x = (i-1) * 2 + 1;
 			pion_1.old_y = 9;
+			pion_1.new_x = pion_1.old_x;
+			pion_1.new_y = pion_1.old_y;
+
+
 			pion_1.dame = false;
 			pion_1.score = -1000;
 			pion_1.move = -1;					// move = -1 indique qu'aucun move n'a été fait.  Donc ne pas tenir compte du score.	
@@ -451,6 +463,8 @@ void CGrid::RetirePionJeu(int pionID)				// Retire le pion des vecteurs de pions
 			pion_1.ID = -i;
 			pion_1.old_x = (i - 6) * 2;
 			pion_1.old_y = 8;
+			pion_1.new_x = pion_1.old_x;
+			pion_1.new_y = pion_1.old_y;
 			pion_1.dame = false;
 			pion_1.score = -1000;
 			pion_1.move = -1;																	// move = -1 indique qu'aucun move n'a été fait.  Donc ne pas tenir compte du score.
@@ -464,6 +478,8 @@ void CGrid::RetirePionJeu(int pionID)				// Retire le pion des vecteurs de pions
 			pion_1.ID = -i;
 			pion_1.old_x = (i - 11) * 2 + 1;
 			pion_1.old_y = 7;
+			pion_1.new_x = pion_1.old_x;
+			pion_1.new_y = pion_1.old_y;
 			pion_1.dame = false;
 			pion_1.score = -1000;
 			pion_1.move = -1;																	// move = -1 indique qu'aucun move n'a été fait.  Donc ne pas tenir compte du score.
@@ -477,6 +493,8 @@ void CGrid::RetirePionJeu(int pionID)				// Retire le pion des vecteurs de pions
 			pion_1.ID = -i;
 			pion_1.old_x = (i - 16) * 2;
 			pion_1.old_y = 6;
+			pion_1.new_x = pion_1.old_x;
+			pion_1.new_y = pion_1.old_y;
 			pion_1.dame = false;
 			pion_1.score = -1000;
 			pion_1.move = -1;																	// move = -1 indique qu'aucun move n'a été fait.  Donc ne pas tenir compte du score.
@@ -651,130 +669,7 @@ void CGrid::RetirePionJeu(int pionID)				// Retire le pion des vecteurs de pions
 	};
 
 
-	/*
-	int CGrid::Calcul_destination(int my_niveau, pion & pion_0)
-	{
-		int thePion;
-		pion temp_pion, new_pion;
 
-		//  Calcule les positions qui peuvent être utilisées par les pions pour plusieurs coups d'avance.  
-		// Le niveau max (max_niveau) est le nombre de coup d'avance qui peuvent être évalués.
-
-
-		if (my_niveau < max_niveau)
-		{
-
-#ifdef DEBUG
-			if (my_niveau == 0)
-			{
-				cout << endl;
-				cout << "Boucle: calcul_debut:  Niveau: " << my_niveau << "\t" << " Pion ID: " << pion_0.ID << "\t" << " Coordonnees(x,y): " << "( " << pion_0.old_x << ", " << pion_0.old_y << " )" << endl;					// pour debuggage seulement.
-			};
-#endif
-
-			my_niveau = my_niveau + 1;																		// augmente le compteur de niveau
-
-			nombre_points_calcules = nombre_points_calcules + 2;
-
-
-
-
-			// Établir les coordonnées des 4 destinations possibles
-
-			new_pion = EvalueNewPion(pion_0, delta_x, delta_y, 1, my_niveau);				// le "1" à la fin permet de séparer les pions d'un niveau.
-																				// ex: 5 au niveau 0, devient 51, 52, 53, 54 au niveau 1.
-
-			if (new_pion.ID > 0)																				// si ID <0, coord sont non accessibles (case occupée ou hors cadrillage).
-			{
-				temp_pion_vector_ordi.push_back(new_pion);
-#ifdef DEBUG
-				cout << " Boucle calcul_niveau+.  Niveau: " << my_niveau << "\t" << " Pion ID: " << new_pion.ID << "\t" << " Coordonnees(x,y): " << "( " << new_pion.old_x << ", " << new_pion.old_y << " )" << endl;		// pour debuggage seulement.
-#endif
-				nombre_points_evalues++;
-			}
-
-			else
-			{
-
-#ifdef DEBUG
-
-				cout << "Ne peut bouger pion: " << pion_0.ID << " (" << +delta_x << ", " << +delta_y << ")" << endl;
-#endif
-			};
-
-			new_pion = EvalueNewPion(pion_0, -delta_x, delta_y, 2, my_niveau);
-
-			if (new_pion.ID > 0)
-			{
-				temp_pion_vector_ordi.push_back(new_pion);
-#ifdef DEBUG
-				cout << " Boucle calcul_niveau+.  Niveau: " << my_niveau << "\t" << " Pion ID: " << new_pion.ID << "\t" << " Coordonnees(x,y): " << "( " << new_pion.old_x << ", " << new_pion.old_y << " )" << endl;		// pour debuggage seulement.
-#endif
-				nombre_points_evalues++;
-			}
-
-			else
-			{
-
-#ifdef DEBUG
-
-				cout << "Ne peut bouger pion " << pion_0.ID << " (" << -delta_x << ", " << +delta_y << ")" << endl;
-#endif
-			};
-
-
-
-			if (pion_0.dame)						//  si le pion est une dame, alors il peut reculer ou avancer.  Sinon le pion ne peut qu'avancer.
-			{
-				nombre_points_calcules = nombre_points_calcules + 2;
-
-				new_pion = EvalueNewPion(pion_0, delta_x, -delta_y, 3, my_niveau);
-
-				if (new_pion.ID > 0)
-				{
-					temp_pion_vector_ordi.push_back(new_pion);
-#ifdef DEBUG
-					cout << " Boucle calcul_niveau+.  Niveau: " << my_niveau << "\t" << " Pion ID: " << new_pion.ID << "\t" << " Coordonnees(x,y): " << "( " << new_pion.old_x << ", " << new_pion.old_y << " )" << endl;		// pour debuggage seulement.
-#endif
-					nombre_points_evalues++;
-				};
-
-				new_pion = EvalueNewPion(pion_0, -delta_x, -delta_y, 4, my_niveau);
-
-				if (new_pion.ID > 0)
-				{
-					temp_pion_vector_ordi.push_back(new_pion);
-#ifdef DEBUG
-					cout << " Boucle calcul_niveau+.  Niveau: " << my_niveau << "\t" << " Pion ID: " << new_pion.ID << "\t" << " Coordonnees(x,y): " << "( " << new_pion.old_x << ", " << new_pion.old_y << " )" << endl;		// pour debuggage seulement.
-#endif
-					nombre_points_evalues++;
-				};
-			};
-
-			for (thePion = 0; thePion < temp_pion_vector_ordi.size(); thePion++)
-
-			{
-				temp_pion = temp_pion_vector_ordi.at(thePion);
-
-
-				Calcul_destination(my_niveau, temp_pion);
-
-			};
-
-		}
-
-		else
-		{
-#ifdef DEBUG
-			//cout << "niveau max atteint" << endl;
-			//cout << endl;
-#endif
-
-			return 0;
-		};
-	};
-
-	*/
 
 	CGrid::pion CGrid::GetPionFromVectOrdi(int le_pion)
 	{
@@ -786,58 +681,132 @@ void CGrid::RetirePionJeu(int pionID)				// Retire le pion des vecteurs de pions
 		return pion_vector_humain.at(le_pion);
 	};
 
-	int CGrid::CalculeMovePionOrdi_max(int niveau, int alpha, int beta)		 // max
+	CGrid::pion  CGrid::CalculeMovePionOrdi_max(pion &pion,  int niveau, int alpha, int beta)		 // max
 	{
 		int v = -1000;
-		int v1;
-		niveau = niveau + 1;
-		int score;
+		CGrid::pion v1;
 
+
+		v1.score = -1000;
+		v1.ID = pion.ID;
+
+		int le_niveau = niveau;
+		le_niveau = le_niveau + 1;
+		
+		int move;
+		
+		CGrid::pion temp_pion;
+				
 		if (niveau > max_niveau)
 		{
 			
 			CalculScoreGrid();			// compte le nombre de pion de chaque joueur.
-			score = (GetScoreInitialHum() - GetScoreGridHum()) - (GetScoreGridOrdi() - GetScoreInitialOrdi());
-			return score;
+										// calcule le score pour ce pion.
+			v1.score = (GetScoreInitialHum() - GetScoreGridHum()) - (GetScoreGridOrdi() - GetScoreInitialOrdi());
+			 
+			return v1;
 		}
 		else
 		{
+			for (move = 0; move < 2; move++)
+			{
+				v1.move = move;
+				temp_pion = EvalueMove(pion, CGrid::delta_x, CGrid::delta_y, le_niveau, move);
+				
+				if (temp_pion.move > -1)			//  >0 veut dire que le pion peut bouger.  <0 , le pion ne peut faire le move.  Donc on passe au move suivant.
+				{
+					//	move pion - moveStack push;
 
-			//	move pion - ordi dans moveStack;
-			v1 = CalculeMovePionHumain_min(niveau, alpha, beta);
-			// move pion - remove from stack
+					v1 = CalculeMovePionHumain_min(v1, le_niveau, alpha, beta);
+					
+					// move pion - moveStack pop;
 
-			if (v1 > v) v = v1;
-			if (v1 > alpha) alpha = v;
-			if (v1 >= beta) return beta;
-			return v;
+ 					if (v1.score > v) v = v1.score;
+					if (v1.score >= beta)
+					{
+						v1.score = v;
+						return v1;
+
+					};
+					if (v1.score > alpha)
+					{
+						alpha = v1.score;
+					}
+				}
+				else
+				{
+					v1.move = -1;					// ici le pion ne peut bouger.
+					return v1;
+				};
+
+			
+			};
+
+			return v1;
+
 		}
 	};
 
-		int CGrid::CalculeMovePionHumain_min(int niveau, int alpha, int beta)
+	CGrid::pion CGrid::CalculeMovePionHumain_min(pion &pion, int niveau, int alpha, int beta)
 		{
-			int v = +1000;
-			int v1;
-			niveau = niveau + 1;
-			int score;
+			
+			CGrid::pion v1,my_pion, temp_pion;
+			int le_niveau, v;
+			le_niveau = niveau;
+			int score, move;
+			int sizeVect;
+			int pionID;
+			
+			v = 1000;
+			v1.ID = pion.ID;
+			v1.move = pion.move;
+			v1.score = pion.score;
 
-			if (niveau > CGrid::max_niveau)
+			sizeVect = GetPionVectHumSize();
+			le_niveau = le_niveau + 1;
+			
+			if (le_niveau > CGrid::max_niveau)
 			{
 				CalculScoreGrid();			// compte le nombre de pion de chaque joueur.
 				score = (GetScoreInitialHum() - GetScoreGridHum()) - (GetScoreGridOrdi() - GetScoreInitialOrdi());
-				return score;
+				v1.score = score;
+				
+				return v1;
 			}
 			else
 			{
+				for (pionID = 0; pionID < sizeVect; pionID++)
+				{
+					my_pion = GetPionFromVectHumain(pionID);
 
-				//	move pion - ordi dans moveStack;
-				v1 = CalculeMovePionOrdi_max(niveau, alpha, beta);
-				// move pion - remove from stack
+					for (move = 0; move < 2; move++)
+					{
+						temp_pion = EvalueMove(pion, CGrid::delta_x, CGrid::delta_y, le_niveau, move);
+						if (temp_pion.move > 0)			//  >0 veut dire que le pion peut bouger.  <0 , le pion ne peut faire le move.  Donc on passe au move suivant.
+						{
+							//	move pion - ordi dans moveStack;
+							v1 = CalculeMovePionOrdi_max(my_pion, le_niveau, alpha, beta);
+							// move pion - remove from stack
 
-				if (v1 < v) v = v1;
-				if (v1 <= alpha) return v;
-				if (v1 < beta) beta = v1;
-				return v;
+							if (v1.score < v) v = v1.score;
+							if (v1.score <= alpha)
+							{
+								v1.score = v;
+								return v1;
+							}
+							if (v1.score < beta) beta = v1.score;
+							
+						}
+						else
+						{
+							v1.move = -1;
+							return v1;
+
+
+						}
+					}
+				}
+				return v1;
 			}
 		};
 
