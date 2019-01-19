@@ -4,7 +4,15 @@
 #define DEBUG	// utilisé pour le debuggage du programme...
 
 CGrid::CGrid()
+
 {
+	CGrid::niveau = 0;
+	//CGrid::grid_main=0;
+	//CGrid::grid_sub=0;
+	CGrid::score_humain_initial=0;
+	CGrid::score_ordi_initial=0;
+	CGrid::score_ordi_grid=0;
+	CGrid::score_humain_grid=0;
 }
 
 
@@ -19,6 +27,7 @@ void CGrid::AjoutPionCalcul(pion lePion)
 							// Ajoute le pion sur la grille de jeu et restaure la situation tel qu'avant le retrait pour évaluation.
 							// Ajoute le pion sur le vecteur des pions du grid.
 
+	unsigned int i;
 
 	grid_sub[lePion.old_x][lePion.old_y].ID = lePion.ID;									// ID du pion.
 	grid_sub[lePion.old_x][lePion.old_y].removed = lePion.removed;							// état du pion (removed = pion retiré)
@@ -32,7 +41,17 @@ void CGrid::AjoutPionCalcul(pion lePion)
 
 
 
-	if (lePion.ID > 0)							// ID >0 -> pion ordi  , ID < 0 -> pion_humain
+	for (i = 0; i < pion_vecteur_retire_calcul.size(); i++)
+	{
+		if (pion_vecteur_retire_calcul.at(i).ID == lePion.ID)
+		{
+			pion_vecteur_retire_calcul.erase(pion_vecteur_retire_calcul.begin() + i);
+
+		};
+
+	};
+
+	/*if (lePion.ID > 0)							// ID >0 -> pion ordi  , ID < 0 -> pion_humain
 	{
 		
 			pion_vector_grid_ordi.push_back(lePion);
@@ -40,7 +59,7 @@ void CGrid::AjoutPionCalcul(pion lePion)
 		else									// ID < 0, donc pion humain.
 	{
 			pion_vector_grid_humain.push_back(lePion);
-	};
+	};*/
 
 	
 
@@ -56,15 +75,20 @@ void CGrid::RetirePionCalcul(pion lePion)
 							// Retire le pion sur le vecteur des pions du grid.
 							// Le pion reste parmi les pions du joueurs jusqu'après l'évaluation des mouvements.  Le retrait se fait ailleurs quand le mouvement devient officiel.
 
-	unsigned short int i;
+	//unsigned short int i;
 
 							// Retire le pion du vecteur des pions actifs.  Et retire pion de la grille de jeu sub_main (pour évaluation MINIMAX)
 
 
 	grid_sub[lePion.old_x][lePion.old_y].ID = 0;
 
+	pion_vecteur_retire_calcul.push_back(lePion);  // Ajoute le pion à la liste des pions retirés.
 
-	if (lePion.ID > 0)							// ID >0 -> pion ordi  , ID < 0 -> pion_humain
+
+
+	// Met à jour le vecteur qui contient la grille de jeu.  Requis afin d'effectuer un scan de tous les pions actifs seulement.
+
+/*	if (lePion.ID > 0)							// ID >0 -> pion ordi  , ID < 0 -> pion_humain
 	{
 		for (i = 0; i < pion_vector_grid_ordi.size(); i++)
 		{
@@ -90,9 +114,9 @@ void CGrid::RetirePionCalcul(pion lePion)
 
 		};
 
-	};
+	};*/
 
-};				
+};	// FIN: RetirePionCalcul(pion lePion)			
 
 
 
@@ -249,15 +273,15 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 		{
 
 			temp_pion = pion_vector_grid_humain.at(i);
-			if (temp_pion.move > -1)											// si move = -1, le pion n'a pas bougé.  Donc score n'a pas de valeur significative.
-			{
-				if (temp_pion.score > score)
+
+				if (temp_pion.score >= score)
 				{
-					bestPion = temp_pion;
+					score = temp_pion.score;
+					bestPion.ID = temp_pion.ID;
+					bestPion.score = temp_pion.score;
+					bestPion.move = temp_pion.move;
 					
 				};
-			};
-
 		};
 
 		return bestPion;
@@ -407,7 +431,7 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 		};
 
 		
-	}
+	};
 
 
 	void CGrid::CreatePionsOrdi()
@@ -616,11 +640,11 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 	CGrid::pion CGrid::EvalueMove(pion & pion_1, int m_delta_X, int m_delta_y, int le_niveau, int move)
 	{
 
-		// Evalue si la nouvelle position est libre et qu'on est toujours dans les limites du jeu lorsqu'on calcule la destination
-		// Si on est dans les limites, on vérifie si on peut bouger (destination libre) et on retourne un pion avec la nouvelle position et le move qui est effectué.
+		// Evalue si la nouvelle position est libre et qu'on reste dans les limites du jeu
+		// Si on est dans les limites, on vérifie si on peut bouger (destination libre).  Si on peut bouger, on retourne un pion avec la nouvelle position et les coordonnées du pion sont mises à jour.		
 		// Si on est hors limites, alors on retourne move = -1 
 		// Si on reste dans les limites et que move>0, alors les coordonnées new_y, new_y contiennent la nouvelle position du pion.  old_x, old_y contiennent la position originale.
-		// Si le move attérit sur un pion ennemi et que la case suivante est libre, alors on peut passer par dessus le pion ennemi (double delta_x, delta_y).  
+		// Si le move attérit sur un pion ennemi et que la case suivante est libre, alors on peut passer par dessus le pion ennemi (double delta_x, delta_y) et le retirer du jeu.  
 		// Restera à retirer le pion ennemi.
 
 
@@ -641,7 +665,7 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 		
 		const long multiple = 1000;
 
-		if (pion_1.ID < 0)											// inverse le déplacement vertical pour un pion adversaire.
+		if (pion_1.ID < 0)											// inverse le déplacement vertical pour un pion humain.  Pion ordi dans le bas du jeu, pion humain dans le haut du jeu.
 		{ 
 			dy = -m_delta_y;
 		}; 
@@ -649,7 +673,7 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 		
 		
 
-		switch (move)  // calcule la case destination à évaluer.  Est-ce qu'on peut accéder à cette case?
+		switch (move)  // calcule la case destination à évaluer.  
 		{
 		case 0:
 			m_pion.new_x = pion_1.old_x + dx;
@@ -673,14 +697,8 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 
 		};
 		
-		int test;
-		if (m_pion.ID == 16)
-		{
-			
-			if (le_niveau ==2)
-				test =1;
-			
-		};
+		
+		
 		
 		
 		if (m_pion.new_x > -1 && m_pion.new_x < max_grid_size && m_pion.new_y> -1 && m_pion.new_y < max_grid_size)		// Vérifie si le pion est dans les limites de la grille de jeu
@@ -694,25 +712,12 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 
 			
 			
-			if ((grid_sub[m_pion.new_x][m_pion.new_y].ID ^ m_pion.ID) == 0)
-
-
-			{
-				// XOR (^)sur les ID:  si les 2 sont de même signe, l'opération donne >0 alors la case est occupée par un pion de l'équipe.
-				// On ne peut bouger.
-
-				test = -1;   //bug: ID du pion et sa destination sont les meme.  Pion DEDOUBLE
-				return m_pion; //DEBUGGAGE SEULEMENT
-			};
-
-
-			
 			if ((grid_sub[m_pion.new_x][m_pion.new_y].ID ^ m_pion.ID) > 0)			
-				
+				// XOR (^)sur les ID:  si les 2 sont de même signe, l'opération donne >0 alors la case est occupée par un pion de l'équipe.
 				
 			{
-				// XOR (^)sur les ID:  si les 2 sont de même signe, l'opération donne >0 alors la case est occupée par un pion de l'équipe.
-				// si  contient un pion de l'équipe. On ne peut bouger.
+				
+				// Contient un pion de notre équipe, on ne peut bouger.
 
 				m_pion.move = -1;
 				return m_pion;
@@ -721,9 +726,11 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 			
 
 
-			if ((grid_sub[m_pion.new_x][m_pion.new_y].ID ^ m_pion.ID) < 0)			// si  contient un pion ennemi. On ne peut vérifier si on peut le retirer.
-			{
+			if ((grid_sub[m_pion.new_x][m_pion.new_y].ID ^ m_pion.ID) < 0)
 				// XOR (^)sur les ID:  si les 2 sont de signe différent, alors l'opération XOR donne <0. La case est occupée par un pion de l'ennemi.
+			{
+
+				// Contient un pion ennemi. On peut vérifier si on retirer ce pion et se déplacer une case plus loin en passant par dessus le pion ennemi.
 
 				temp_x = m_pion.new_x;
 				temp_y = m_pion.new_y;
@@ -754,18 +761,19 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 
 				};  // fin : switch(move)
 				
-				if (m_pion.new_x > -1 && m_pion.new_x < max_grid_size && m_pion.new_y> -1 && m_pion.new_y < max_grid_size)		// Vérifie si le pion est dans les limites de la grille de jeu
+				if (m_pion.new_x > -1 && m_pion.new_x < max_grid_size && m_pion.new_y> -1 && m_pion.new_y < max_grid_size)		
+																		// Vérifie si le pion est dans les limites de la grille de jeu
 				{
-					if (grid_sub[m_pion.new_x][m_pion.new_y].ID == 0)		// Évalue la case derrière le pion ennemi.  Est-elle libre? Si oui, on peut sauter et retirer ce pion.
+					if (grid_sub[m_pion.new_x][m_pion.new_y].ID == 0)	// Évalue la case derrière le pion ennemi.  Est-elle libre? Si oui, on peut sauter par dessus le pion ennemi et le retirer.
 					{
-						m_pion.removed = true;
+						m_pion.removed = true;							// Indique qu'on peut retirer un pion ennemi.  Calcul du retrait se fait ailleurs.
 						return m_pion;
 					}
 					else												// ici, la case derrière le pion ennemi n'est pas libre. On ne peut sauter et retirer le pion ennemi																
 					{
 						
-						m_pion.new_x = temp_x ;							// remet les coordonnées tel que pour le mouvement initial (ne peut sauter pour retirer pion ennemi)
-						m_pion.new_y = temp_y ;
+						//m_pion.new_x = temp_x ;						// remet les coordonnées tel que pour le mouvement initial (ne peut sauter pour retirer pion ennemi)
+						//m_pion.new_y = temp_y ;
 						
 						m_pion.move = -1;
 						return m_pion;									// remet les coordonnées tel qu'avant l'évaluation du saut.
@@ -773,11 +781,10 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 				
 				} 
 				else
-				{  // pion hors limite.  On ne peut bouger le pion.
+				{														// pion tombe hors limite du jeu.  On ne peut bouger le pion.
 
-					m_pion.new_x = temp_x;							// remet les coordonnées tel que pour le mouvement initial (ne peut sauter pour retirer pion ennemi)
-					m_pion.new_y = temp_y;
-
+					//m_pion.new_x =temp_x;
+					//m_pion.new_y = temp_y;
 					m_pion.move = -1;
 					return m_pion;
 
@@ -792,7 +799,7 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 		{
 			
 			m_pion.move = -1;
-			return m_pion;												// case hors de la grille de jeu. On ne peut bouger: ID pion = -10000;
+			return m_pion;												
 		};
 		
 	};

@@ -27,7 +27,7 @@ public:
 		bool dame;  							// si le pion devient une dame, alors dame = TRUE;
 		int score;								// score calculé pour ce pion (évaluation minimax)
 		int move;								// correspond au mouvement associé au score (directions (x,y) -> 0= +/+ , 1 = -/+, 2 = +/-, 3 = -/-)  -1: ne peut bouger le pion
-		bool removed;							// removed = true: on peut retirer un pion ennemi. Utilise la procédure d'removed pour corriger le jeu.
+		bool removed;							// removed = true: on peut retirer un pion ennemi. Utilise la procédure removed pour corriger le jeu.
 												// removed = False: on ne peut retirer un pion ennemi. Mouvement normal.
 
 	};
@@ -107,6 +107,7 @@ public:
 	pion grid_sub[10][10];						//grid secondaire utilisé pour suivre le mouvement des pions lors du calcul MINIMAX.
 
 	pion grid_main[10][10];						//grid principal avant changement.  PAS D'UTILISATION POUR LE MOMENT. 
+	
 	int max_niveau = 2;
 
 
@@ -114,6 +115,7 @@ public:
 
 	void PushPionOnStack(pion & lePion);
 	pion PopPionFromStack();
+	std::vector <pion> pion_vecteur_retire_calcul;	// contient les pions qui sont retirés temporairement pour le calcul.
 
 private:
 
@@ -126,10 +128,10 @@ private:
 												// deplacement permis en y (+/-)
 	std::vector <pion> pion_vector_ordi;		// contient l'état des pions ordi du jeu
 	std::vector <pion> pion_vector_humain;		// contient l'état des pions humains du jeu
-	std::stack<pion> stack_move_pion;		// contient les mouvements qui sont effectués sur la grille de jeu lors de l'évaluation  minimax.
-	std::vector <pion> pion_vector_grid_ordi;
-	std::vector <pion> pion_vector_grid_humain;
-
+	std::stack<pion> stack_move_pion;			// contient les mouvements qui sont sauvegardés lors de l'évaluation  minimax.
+	std::vector <pion> pion_vector_grid_ordi;	// contient l'état des pions ordi de la grille de jeu
+	std::vector <pion> pion_vector_grid_humain;	// contient l'état des pions humains de la grille de jeu
+	
 
 
 };
