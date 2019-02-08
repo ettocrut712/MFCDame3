@@ -18,17 +18,24 @@ public:
 
 	struct pion
 	{
-		long int ID;							// ID du pion
-		int old_x;								// coordonnees X (origine lors d'un déplacement)
-		int old_y;								// coordonnees Y
-		int new_x;								// coordonnees X (destination lors d'un déplacement)
-		int new_y;								// coordonnees Y
+		long int ID=0;							// ID du pion.  ID > 0 = ordi. ID < 0 = humain (l'autre  joueur).
+		int old_x=0;							// coordonnees X (origine lors d'un déplacement)
+		int old_y=0;							// coordonnees Y
+		int new_x=0;							// coordonnees X (destination lors d'un déplacement)
+		int new_y=0;							// coordonnees Y
+		
 
-		bool dame;  							// si le pion devient une dame, alors dame = TRUE;
-		int score;								// score calculé pour ce pion (évaluation minimax)
-		int move;								// correspond au mouvement associé au score (directions (x,y) -> 0= +/+ , 1 = -/+, 2 = +/-, 3 = -/-)  -1: ne peut bouger le pion
-		bool removed;							// removed = true: on peut retirer un pion ennemi. Utilise la procédure removed pour corriger le jeu.
+		bool hasMoved = FALSE;					// TRUE: le pion s'est déplacé,  FALSE: le pion ne s'est pas déplacé.  Utilisé lors de l'évaluation des mouvements possibles des pions.
+												// Si le pion ne s'est pas déplacé, alors sa position est dans old_x, old_y.  Si le pion s'est déplacé, sa position est dans new_x, new_y.
+
+		int niveau =0;							// indique à quel niveau ( cycle min/max) le pion a été déplacé.  Si plusieurs pions sont déplacés lorsque au même niveau, ils ont tous le "niveau" identique. 
+		bool dame = FALSE;  					// si le pion devient une dame, alors dame = TRUE;
+		int score =0;							// score calculé pour ce pion (évaluation minimax)
+		int move=0;								// correspond au mouvement associé au score (directions (x,y) -> 0= +/+ , 1 = -/+, 2 = +/-, 3 = -/-)  -1: ne peut bouger le pion
+		bool removed= FALSE;					// removed = true: on peut retirer un pion ennemi. Les coordonnées du pion retiré sont dans removed_x,y.
 												// removed = False: on ne peut retirer un pion ennemi. Mouvement normal.
+		int removed_x = 0;						// coordonnées du pion retiré 
+		int removed_y = 0;						// coordonnées du pion retiré
 
 	};
 
@@ -60,7 +67,7 @@ public:
 	void RetirePionCalcul(pion lePion);				// Utilisé pour retirer un pion du jeu lors du calcul (pion retiré lors du calcul, pour évaluation par minimax)
 
 	void ResetScorePions();
-	int SetPionScore(pion pionID, int score, int move);
+	int SetPionScore(pion pionID);
 
 	int GetPionVectOrdiSize();
 	int GetPionVectHumSize();
@@ -109,26 +116,26 @@ public:
 	pion grid_main[10][10];						//grid principal avant changement.  PAS D'UTILISATION POUR LE MOMENT. 
 	
 	int max_niveau = 2;
-
+	int max_grid_size = 10;						// grille de 10 par 10 max (selon le web, c'est le grid pour un jeu de dame)
 
 	// OPERATIONS SUR LE STACK DES MOUVEMENTS DE PIONS
 
-	void PushPionOnStack(pion & lePion);
-	pion PopPionFromStack();
+	void PushPionOnMoveVector(pion & lePion);
+	pion PopPionFromMoveVector();
 	std::vector <pion> pion_vecteur_retire_calcul;	// contient les pions qui sont retirés temporairement pour le calcul.
 
-private:
+
 
 	int score_ordi_initial, score_humain_initial;
 	int score_ordi_grid, score_humain_grid;
 
 	
-	int max_grid_size = 10;						// grille de 10 par 10 max (selon le web, c'est le grid pour un jeu de dame)
+	
 
 												// deplacement permis en y (+/-)
 	std::vector <pion> pion_vector_ordi;		// contient l'état des pions ordi du jeu
 	std::vector <pion> pion_vector_humain;		// contient l'état des pions humains du jeu
-	std::stack<pion> stack_move_pion;			// contient les mouvements qui sont sauvegardés lors de l'évaluation  minimax.
+	std::vector<pion> vector_move_pion;			// contient les mouvements qui sont sauvegardés lors de l'évaluation  minimax.
 	std::vector <pion> pion_vector_grid_ordi;	// contient l'état des pions ordi de la grille de jeu
 	std::vector <pion> pion_vector_grid_humain;	// contient l'état des pions humains de la grille de jeu
 	
