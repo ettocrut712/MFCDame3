@@ -57,7 +57,7 @@ public:
 	void CreatePionsOrdi();							// test ok
 	void CreatePionHumain();						// test ok
 
-	void TransferTousPionToGrid();					// test ok
+	void TransferTousPionToMainGrid();					// test ok
 
 
 	//void RetirePionGrid(int pionID, int main_sub);	// test ok
@@ -77,8 +77,6 @@ public:
 
 	pion GetPionFromGridOrdi(int le_pion);
 	pion GetPionFromGridHumain(int le_pion);
-
-
 
 	pion TrouveBestPionOrdi();
 	pion TrouveBestPionHumain();
@@ -106,9 +104,10 @@ public:
 
 	// MOUVEMENT DES PIONS
 
-	//pion CalculeMovePionOrdi_max(pion & m_pion, int niveau, int alpha, int beta);
-	//pion CalculeMovePionHumain_min(pion &pion, int niveau, int alpha, int beta);
+	
 	pion EvalueMove(pion & pion_1, int m_delta_X, int m_delta_y, int le_niveau, int move);
+
+	bool MovePion(pion & pion_1, int m_delta_X, int m_delta_y, int move);
 	
 
 	pion grid_sub[10][10];						//grid secondaire utilisé pour suivre le mouvement des pions lors du calcul MINIMAX.
@@ -118,7 +117,7 @@ public:
 	int max_niveau = 2;
 	int max_grid_size = 10;						// grille de 10 par 10 max (selon le web, c'est le grid pour un jeu de dame)
 
-	// OPERATIONS SUR LE STACK DES MOUVEMENTS DE PIONS
+	// OPERATIONS SUR LE vecteur DES MOUVEMENTS DE PIONS
 
 	void PushPionOnMoveVector(pion & lePion);
 	pion PopPionFromMoveVector();
