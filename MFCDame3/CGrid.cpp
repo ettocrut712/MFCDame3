@@ -28,6 +28,7 @@ void CGrid::AjoutPionCalcul(pion lePion)
 							// Ajoute le pion sur le vecteur des pions du grid.
 
 	unsigned int i;
+	int vectSize;
 
 	grid_sub[lePion.removed_x][lePion.removed_y].ID = lePion.ID;									// ID du pion.
 
@@ -51,8 +52,70 @@ void CGrid::AjoutPionCalcul(pion lePion)
 		};
 
 	};
+	
+	std::vector<pion>::iterator it;
+
+	if (lePion.ID > 0)
+	{
+		it = pion_vector_grid_ordi.begin();
+		vectSize = pion_vector_grid_ordi.size();
+	}
+	else 
+	{
+		it = pion_vector_grid_humain.begin();
+		vectSize = pion_vector_grid_humain.size();
+	};
+	
+	i = 0;
+
+	bool recherchePion = true;
+
+	while (recherchePion)
+	{
+		if (lePion.ID > 0) 
+		{
+			if (pion_vector_grid_ordi.at(i).ID > lePion.ID)															// les pions sont classé en ordre croissant parID. Trouve le ID séquentiel pour insérer le pion
+			{
+				pion_vector_grid_ordi.insert(it+i, lePion);
+				recherchePion = false;
+			};
+			
+			
+
+			if (i == (vectSize - 1))																// ici, on arrive au dernier élément, donc on ajoute à la fin  du vecteur.
+			{
+				pion_vector_grid_ordi.push_back(lePion);
+				recherchePion = false;
+			};
+
+			i = i + 1;
+
+		};
+
+		if (lePion.ID < 0)
+		{
+			if (pion_vector_grid_humain.at(i).ID < lePion.ID)															// les pions sont classé en ordre croissant par ID NEGATIVES ICI, d'où le "<"
+			{
+				pion_vector_grid_humain.insert(it+i, lePion);
+				recherchePion = false;
+			};
+			
+			
+
+			if (i == (vectSize - 1))																// ici, on arrive au dernier élément, donc on ajoute à la fin  du vecteur.
+			{
+				pion_vector_grid_humain.push_back(lePion);
+				recherchePion = false;
+			};
+
+			i = i + 1;
+
+		};
+	};
 
 	
+	
+
 };				
 
 
@@ -148,7 +211,7 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 		};
 
 		ResetPionVectorGrid();					// Efface les vecteurs de pions de la grille. Transfert les pions du jeu vers les vecteurs de pions de la grille de jeu
-		TransferTousPionToMainGrid();				// Repeuple la grille de jeu main
+		TransferTousPionToMainGrid();			// Repeuple la grille de jeu main
 		CloneGridMainToSub();					// Copie la grille de jeu grid_main vers grid_sub.
 
 	}
@@ -248,8 +311,6 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 		};
 	}
 
-//std::vector <pion> pion_vector_grid_ordi;
-//	std::vector <pion> pion_vector_grid_humain;
 
 	CGrid::pion CGrid::TrouveBestPionOrdi()									//recherche le pion qui a le plus haut pointage pour le prochain mouvement (selon minimax)
 	{
@@ -662,6 +723,21 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 	
 		return pion_vector_humain.size();
 	};
+	//*****************************************************************************
+
+	int CGrid::GetPionVectOrdi_grid_Size()
+	{
+
+		return pion_vector_grid_ordi.size();
+	};
+
+	int CGrid::GetPionVectHum_grid_Size()
+	{
+
+		return pion_vector_grid_humain.size();
+	};
+	
+
 
 
 	CGrid::pion CGrid::EvalueMove(pion & pion_1, int m_delta_X, int m_delta_y, int le_niveau, int move)
@@ -890,7 +966,13 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 
 	CGrid::pion CGrid::GetPionFromGridOrdi(int le_pion)
 	{
-		
+		bool problemeSize = FALSE;
+
+		if (le_pion > pion_vector_grid_ordi.size()-1)
+		{
+
+			problemeSize = true;
+		};
 
 		return pion_vector_grid_ordi.at(le_pion);
 
@@ -953,7 +1035,7 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 
 		pion = EvalueMove(pion_1, m_delta_X, m_delta_y, niveau,move);
 
-		size = pion_vector_ordi.size();
+		
 
 		if (pion.hasMoved)
 		{
@@ -972,6 +1054,8 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 			
 			if (pion_1.ID > 0)
 			{
+				size = pion_vector_ordi.size();
+
 				for (i = 0; i < size; i++)
 				{
 					if (pion_vector_ordi.at(i).ID == pion.ID)
@@ -984,6 +1068,8 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 			}
 			else
 			{
+				size = pion_vector_humain.size();
+
 				for (i = 0; i < size; i++)
 				{
 					if (pion_vector_humain.at(i).ID == pion.ID)
@@ -1022,6 +1108,12 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 
 			};  //Fin: if(temp_pion.removed)
 			//pion_vector_ordi.push_back(pion_1);
+			
+			TransferTousPionToMainGrid();
+			CloneGridMainToSub();
+			ResetPionVectorGrid();
+
+			
 			return TRUE;
 
 		}

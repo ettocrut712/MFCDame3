@@ -61,7 +61,7 @@ public:
 
 
 	//void RetirePionGrid(int pionID, int main_sub);	// test ok
-	void RetirePionJeu(pion pionID);					// test ok
+	void RetirePionJeu(pion pionID);					// test ok  Quand l'analyse est complétée, on retire un pion définitivement du jeu ici.
 	
 	void AjoutPionCalcul(pion lePion);				// Utilisé pour remettre un pion en jeu après que le calcul l'impliquant soit terminé.
 	void RetirePionCalcul(pion lePion);				// Utilisé pour retirer un pion du jeu lors du calcul (pion retiré lors du calcul, pour évaluation par minimax)
@@ -71,6 +71,10 @@ public:
 
 	int GetPionVectOrdiSize();
 	int GetPionVectHumSize();
+
+	int GetPionVectOrdi_grid_Size();
+	int GetPionVectHum_grid_Size();
+
 
 	pion GetPionFromVectOrdi(int le_pion);
 	pion GetPionFromVectHumain(int le_pion);
