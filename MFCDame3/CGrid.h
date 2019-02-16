@@ -36,6 +36,10 @@ public:
 												// removed = False: on ne peut retirer un pion ennemi. Mouvement normal.
 		int removed_x = 0;						// coordonnées du pion retiré 
 		int removed_y = 0;						// coordonnées du pion retiré
+		int removed_ID = 0;
+
+		int alpha = 0;							// pour l'algorithme minimax.  
+		int beta = 0;
 
 	};
 
@@ -63,8 +67,11 @@ public:
 	//void RetirePionGrid(int pionID, int main_sub);	// test ok
 	void RetirePionJeu(pion pionID);					// test ok  Quand l'analyse est complétée, on retire un pion définitivement du jeu ici.
 	
-	void AjoutPionCalcul(pion lePion);				// Utilisé pour remettre un pion en jeu après que le calcul l'impliquant soit terminé.
-	void RetirePionCalcul(pion lePion);				// Utilisé pour retirer un pion du jeu lors du calcul (pion retiré lors du calcul, pour évaluation par minimax)
+	void AjoutPionGrid_old(pion lePion);				// Utilisé pour remettre un pion en jeu après que le calcul l'impliquant soit terminé.
+	void AjoutPionGrid_new(pion lePion);				// Utilisé pour remettre un pion en jeu après que le calcul l'impliquant soit terminé.
+	pion RetirePionCalcul(pion lePion);				// Utilisé pour retirer un pion du jeu lors du calcul (pion retiré lors du calcul, pour évaluation par minimax)
+	void AjustePionVectorGrid(pion lePion);
+	
 
 	void ResetScorePions();
 	int SetPionScore(pion pionID);
