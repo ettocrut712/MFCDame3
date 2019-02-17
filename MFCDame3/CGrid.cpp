@@ -358,12 +358,21 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 
 	CGrid::pion CGrid::TrouveBestPionOrdi()									//recherche le pion qui a le plus haut pointage pour le prochain mouvement (selon minimax)
 	{
-		int score;
-		unsigned short int i;
+		int random_ID, max_pion_y_ID, max_pion_y, best_y;
+		int score, le_niveau, move, ID, prise;
+		unsigned short int i,j;
 		pion temp_pion;														// move = -1 indique qu'aucun move n'a été fait.  Donc ne pas tenir compte du score.
 		score = -1000;
 		// initialise à la valeur négative la plus élevée possible...
 
+		std::vector <pion> listeMeilleursPions;									// contient la liste des meilleurs pions ( 5 max)
+		listeMeilleursPions.clear();
+
+		best_y = 9;															// position en "y" de départ afin de déterminer quels sont les pions les plus près de l'ennemi. humain max "y" = 9 et descend vers "0",  
+																				// ordi part de "y"= 0 et augmente vers 9
+		// initialise à la valeur négative la plus élevée possible...
+		
+		
 		pion bestPion;
 
 		for (i = 0; i < pion_vector_ordi.size(); i++)
@@ -382,6 +391,112 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 				bestPion.new_y = temp_pion.new_y;
 
 			};
+
+			if (listeMeilleursPions.size() < 5)								// prendre les 5 premiers pions (max) pour commencer à peupler le vecteur des meilleurs pions.
+																				// il se peut qu'on ait moins de 5 pions s'il reste moins de 5 pions en jeu.
+			{
+				listeMeilleursPions.push_back(temp_pion);
+				if (temp_pion.old_y < best_y)
+				{
+					best_y = temp_pion.old_y;								// trouve le pion le plus rapproché de l'ennemi (celui qui est le plus près de y = 0)
+				};
+
+			}
+			else
+			{
+
+				if (temp_pion.old_y <= best_y)								// ici, on a déjà 5 pions dans la liste et on compare le nouveau pion avec ceux déjà enregistré.  S'il est plus près de l'ennemi, on remplace un pion de la liste.
+				{
+					max_pion_y_ID = 0;
+					max_pion_y = 0;
+					// dans la liste, trouve le pions avec le "y" le plus élevé (le plus éloigné de l'ennemi) et le remplacer par ce pion.
+					for (j = 0; j < listeMeilleursPions.size(); j++)
+					{
+						if (listeMeilleursPions.at(j).old_y > max_pion_y)
+						{
+							max_pion_y_ID = j;								// recherche le pion le plus éloigné (celui avec le "y" le plus élevé)
+							max_pion_y = listeMeilleursPions.at(j).old_y;
+						};
+					};
+
+					listeMeilleursPions.at(max_pion_y_ID) = temp_pion;
+					best_y = temp_pion.old_y;
+
+
+				};
+			};
+
+			le_niveau = 0;
+
+
+			if (bestPion.score == 0)																		// si le meilleur pointage est zéro, alors aucun pion ne peut capturer de pion ennemi.  
+			{
+				// On recherche alors un pion qui peut se déplacer et qui est le plus près de l'ennemi.
+				for (ID = 0; ID < listeMeilleursPions.size(); ID++)
+				{
+					prise = 0;																				// ICI, on teste les pions et élimine les pions qui ne peuvent bouger.
+
+					for (move = 0; move < 2; move++)
+					{
+
+
+						temp_pion = EvalueMove(listeMeilleursPions.at(ID), delta_x, delta_y, le_niveau, move);
+						if (!temp_pion.hasMoved)															// si le pion ne peut bouger, on le retire de la liste...
+						{
+							prise = prise + 1;
+							if (prise == 2)  	listeMeilleursPions.erase(listeMeilleursPions.begin() + ID);
+						}
+						else
+						{
+
+							listeMeilleursPions.at(ID).move = move;
+						};
+
+					};
+
+				};
+
+				if (listeMeilleursPions.size() == 0)
+				{
+
+				};
+
+
+				srand(time(NULL));
+				
+				random_ID = rand() % 100;
+
+				random_ID = random_ID * listeMeilleursPions.size();
+
+				//random_ID = random_ID / (RAND_MAX)*(listeMeilleursPions.size());
+
+				random_ID = random_ID / 100;
+
+				//vérifie que ces pions peuvent bouger.  Si un pion ne peut bouger, on l'enlève le la liste
+
+				if (listeMeilleursPions.size() == 0)
+				{
+					random_ID = 0;
+
+					// ICI on a un bug, aucun pion ne peut bouger...
+				};
+
+				bestPion = listeMeilleursPions.at(random_ID);
+
+
+
+
+			};
+
+
+
+
+
+
+
+
+
+
 		};
 
 		return bestPion;
@@ -389,8 +504,8 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 
 	CGrid::pion CGrid::TrouveBestPionHumain()									//recherche le pion qui a le plus haut pointage pour le prochain mouvement (selon minimax)
 	{
-		unsigned int i,j, best_y, max_pion_y, max_pion_y_ID, random_ID;
-		int score, le_niveau, move, ID, prise;
+		unsigned int i,j, best_y, max_pion_y, max_pion_y_ID ;
+		int score, le_niveau, move, ID, prise, random_ID;
 		pion temp_pion;															
 		score = -1000;
 		std::vector <pion> listeMeilleursPions;									// contient la liste des meilleurs pions ( 5 max)
@@ -456,7 +571,7 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 
 
 
-		};
+		}; // for (i = 0; i < pion_vector_humain.size(); i++)
 
 		le_niveau = 0;
 		
@@ -495,8 +610,14 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 
 
 			srand(time(NULL));
-			random_ID = (double)rand() / (RAND_MAX + 1)*(listeMeilleursPions.size());
-																									//vérifie que ces pions peuvent bouger.  Si un pion ne peut bouger, on l'enlève le la liste
+
+			random_ID = rand()%100;
+			
+			random_ID = random_ID * listeMeilleursPions.size();
+
+			//random_ID = random_ID / (RAND_MAX)*(listeMeilleursPions.size());
+
+			random_ID = random_ID / 100;																						//vérifie que ces pions peuvent bouger.  Si un pion ne peut bouger, on l'enlève le la liste
 
 			if (listeMeilleursPions.size() == 0)
 			{
@@ -524,7 +645,31 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 
 	}
 
-	void CGrid::CalculScoreGrid()																		// le score d'un joueur est le nombre de pion qui reste en jeu;
+
+	int CGrid::CalculScoreGrid(CGrid::pion &lePion)
+	{
+	
+		if (lePion.ID > 0)
+		{
+			lePion.score = (GetScoreInitialHum() - GetScoreGridHum()) - (GetScoreGridOrdi() - GetScoreInitialOrdi());
+
+			// score = +humains retirés - ordis retirés
+			
+		};
+
+
+		// SI L'HUMAIN JOUE, LA FORMULE DE CALCUL DU POINTAGE DEVIENT:
+		if (lePion.ID < 0)
+		{
+			lePion.score = (GetScoreInitialOrdi() - GetScoreGridOrdi()) - (GetScoreInitialHum() - GetScoreGridHum());
+			// score = +ordis retirés  - humains retirés
+		};
+
+		return lePion.score;
+	
+	};
+
+	void CGrid::ComptePionsGrid()																		// le score d'un joueur est le nombre de pion qui reste en jeu;
 	{
 
 		int i, j;
@@ -625,12 +770,12 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 						return 1;
 					};
 
-
-
-					return 0;
+										
 				};
 
 			};
+
+			return 0;
 
 		}
 		else																// ID < 0, donc pion humain.
@@ -650,12 +795,12 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 						pion_vector_humain.at(i)=temp_pion;
 						return 1;
 					};
-
-					return 0;
+					
 				};
-				return 0;
 
 			};
+
+			return 0;
 
 		};
 
@@ -672,7 +817,7 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 
 		// CODE DEBUG ******************************************
 
-		pion_1.ID = 1;
+		/*pion_1.ID = 1;
 		pion_1.old_x = 2;
 		pion_1.old_y = 8;
 		pion_1.new_x = pion_1.old_x;
@@ -697,10 +842,10 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 		pion_1.move = -1;												// move = -1 indique qu'aucun move n'a été fait.  Donc ne pas tenir compte du score.
 		pion_1.removed = false;
 		pion_vector_ordi.push_back(pion_1);
-
+*/
 		//*****************************************************
 
-		/*for (i = 1; i < max_grid_size/2+1; i++)								// crée les pions de la rangée "0"
+		for (i = 1; i < max_grid_size/2+1; i++)								// crée les pions de la rangée "0"
 		{
 
 			pion_1.ID = i;
@@ -768,7 +913,7 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 			pion_vector_ordi.push_back(pion_1);
 		};
 
-		*/
+		
 	}
 
 
@@ -779,7 +924,7 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 		pion_vector_humain.clear();
 
 		// DEBUG CODE ***************************************
-		pion_1.ID = -1;
+	/*	pion_1.ID = -1;
 		pion_1.old_x = 1;
 		pion_1.old_y = 9;
 		pion_1.new_x = pion_1.old_x;
@@ -807,7 +952,7 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 		pion_1.removed = false;
 		pion_vector_humain.push_back(pion_1);
 
-/*
+
 		pion_1.ID = -7;
 		pion_1.old_x = 2;
 		pion_1.old_y = 9;
@@ -827,7 +972,7 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 
 
 
-		/*
+		
 		for (i = 1; i < max_grid_size / 2 + 1; i++)							// crée les pions de la rangée "0"
 		{
 
@@ -898,7 +1043,7 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 			pion_vector_humain.push_back(pion_1);
 		};
  
- */
+ 
 
 	}
 
@@ -1026,8 +1171,21 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 
 			};
 
+		// DEBUG CODE
 		
-				
+		if ((m_pion.new_y < pion_1.old_y) && pion_1.ID > 0)
+		{
+			pion_1.ID = pion_1.ID;
+		};
+
+
+		if ((m_pion.new_y > pion_1.old_y) && pion_1.ID < 0)
+		{
+			pion_1.ID = pion_1.ID;
+		};
+		
+		// FIN DEBUG CODE
+
 		if (m_pion.new_x > -1 && m_pion.new_x < max_grid_size && m_pion.new_y> -1 && m_pion.new_y < max_grid_size)		// Vérifie si le pion est dans les limites de la grille de jeu
 
 		{
@@ -1059,6 +1217,21 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 				m_pion.new_y = pion_1.new_y;
 				m_pion.hasMoved = FALSE;
 				m_pion.removed = FALSE;
+
+				// DEBUG CODE
+
+				if ((m_pion.new_y < pion_1.old_y) && pion_1.ID > 0)
+				{
+					pion_1.ID = pion_1.ID;
+				};
+
+
+				if ((m_pion.new_y > pion_1.old_y) && pion_1.ID < 0)
+				{
+					pion_1.ID = pion_1.ID;
+				};
+
+				// FIN DEBUG CODE
 				return m_pion;
 			};
 			
@@ -1103,6 +1276,21 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 
 				};  // fin : switch(move)
 				
+				// DEBUG CODE
+
+				if ((m_pion.new_y < pion_1.old_y) && pion_1.ID > 0)
+				{
+					pion_1.ID = pion_1.ID;
+				};
+
+
+				if ((m_pion.new_y > pion_1.old_y) && pion_1.ID < 0)
+				{
+					pion_1.ID = pion_1.ID;
+				};
+
+				// FIN DEBUG CODE
+
 				if (m_pion.new_x > -1 && m_pion.new_x < max_grid_size && m_pion.new_y> -1 && m_pion.new_y < max_grid_size)		
 																		// Vérifie si le pion est dans les limites de la grille de jeu
 				{
@@ -1120,6 +1308,21 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 						m_pion.new_y = pion_1.new_y;
 						m_pion.removed = FALSE;
 						m_pion.hasMoved = FALSE;
+
+						// DEBUG CODE
+
+						if ((m_pion.new_y < pion_1.old_y) && pion_1.ID > 0)
+						{
+							pion_1.ID = pion_1.ID;
+						};
+
+
+						if ((m_pion.new_y > pion_1.old_y) && pion_1.ID < 0)
+						{
+							pion_1.ID = pion_1.ID;
+						};
+
+						// FIN DEBUG CODE
 						return m_pion;									
 					}; 
 				
@@ -1131,6 +1334,21 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 					m_pion.new_y = pion_1.new_y;
 					m_pion.removed = FALSE;
 					m_pion.hasMoved = FALSE;
+
+					// DEBUG CODE
+
+					if ((m_pion.new_y < pion_1.old_y) && pion_1.ID > 0)
+					{
+						pion_1.ID = pion_1.ID;
+					};
+
+
+					if ((m_pion.new_y > pion_1.old_y) && pion_1.ID < 0)
+					{
+						pion_1.ID = pion_1.ID;
+					};
+
+					// FIN DEBUG CODE
 					return m_pion;
 
 				};//fin: if (pion dans limites du jeu)
@@ -1146,6 +1364,21 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 		m_pion.new_y = pion_1.new_y;
 		m_pion.removed = FALSE;
 		m_pion.hasMoved = FALSE;
+
+		// DEBUG CODE
+
+		if ((m_pion.new_y < pion_1.old_y) && pion_1.ID > 0)
+		{
+			pion_1.ID = pion_1.ID;
+		};
+
+
+		if ((m_pion.new_y > pion_1.old_y) && pion_1.ID < 0)
+		{
+			pion_1.ID = pion_1.ID;
+		};
+
+		// FIN DEBUG CODE
 		return m_pion;												
 		};
 		
@@ -1266,6 +1499,22 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 			pion_1.old_x = pion.new_x;
 			pion_1.old_y = pion.new_y;
 			pion_1.new_x = pion.new_x;
+			pion_1.new_y = pion.new_y;
+			
+			
+			// DEBUG CODE
+			if((pion_1.new_y < pion_1.old_y) && pion_1.ID >0)
+			{
+				pion_1.ID = pion_1.ID;
+			};
+
+
+			if ((pion_1.new_y > pion_1.old_y) && pion_1.ID < 0)
+			{
+				pion_1.ID = pion_1.ID;
+			};
+
+			// FIN DEBUG CODE
 			pion_1.new_y = pion.new_y;
 			
 			pion_1.hasMoved = FALSE;

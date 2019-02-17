@@ -110,8 +110,8 @@ public:
 	
 	int GetScoreGridOrdi();							// test ok
 	int GetScoreGridHum();							// test ok
-	void CalculScoreGrid();							// test ok
-	
+	void ComptePionsGrid();							// test ok
+	int CalculScoreGrid(CGrid::pion &lePion);
 
 	// MOUVEMENT DES PIONS
 
