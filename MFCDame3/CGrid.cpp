@@ -361,7 +361,7 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 		int random_ID, max_pion_y_ID, max_pion_y, best_y;
 		int score, le_niveau, move, ID, prise;
 		unsigned short int i,j;
-		pion temp_pion;														// move = -1 indique qu'aucun move n'a été fait.  Donc ne pas tenir compte du score.
+		pion temp_pion;														
 		score = -1000;
 		// initialise à la valeur négative la plus élevée possible...
 
@@ -504,27 +504,45 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 
 	CGrid::pion CGrid::TrouveBestPionHumain()									//recherche le pion qui a le plus haut pointage pour le prochain mouvement (selon minimax)
 	{
-		unsigned int i,j, best_y, max_pion_y, max_pion_y_ID ;
-		int score, le_niveau, move, ID, prise, random_ID;
+		unsigned int i,j, best_y, worst_y, max_pion_y, max_pion_y_ID ;
+		int bestScore, le_niveau, move, ID, prise, random_ID;
 		pion temp_pion;															
-		score = -1000;
+		bestScore = -1000;
 		std::vector <pion> listeMeilleursPions;									// contient la liste des meilleurs pions ( 5 max)
 		listeMeilleursPions.clear();
 
-		best_y =9;															// position en "y" de départ afin de déterminer quels sont les pions les plus près de l'ennemi. humain max "y" = 9 et descend vers "0",  
-																				// ordi part de "y"= 0 et augmente vers 9
-		// initialise à la valeur négative la plus élevée possible...
+		best_y =9;																// position en "y" de départ afin de déterminer quels sont les pions les plus près de l'ennemi. humain max "y" = 9 et descend vers "0",  
+		worst_y = 0;															// ordi part de "y"= 0 et augmente vers 9
+																				// initialise à la valeur négative la plus élevée possible...
 
 		pion bestPion;
+
+		// 1ere étape: identifie les pions qui ont un score >0
+
+
+		for (i = 0; i < pion_vector_humain.size(); i++)
+		{
+			temp_pion = pion_vector_humain.at(i);
+
+			if (temp_pion.score > 0)
+			{
+				listeMeilleursPions.push_back(temp_pion);
+
+			};
+		};
+
+
 
 		for (i = 0; i < pion_vector_humain.size(); i++)
 		{
 
 			temp_pion = pion_vector_humain.at(i);
 
-				if (temp_pion.score >= score)
+
+
+				if (temp_pion.score >= bestScore)
 				{
-					score = temp_pion.score;
+					bestScore = temp_pion.score;
 					bestPion.ID = temp_pion.ID;
 					bestPion.score = temp_pion.score;
 					bestPion.move = temp_pion.move;
@@ -543,6 +561,12 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 					{
 						best_y = temp_pion.old_y;								// trouve le pion le plus rapproché de l'ennemi (celui qui est le plus près de y = 0)
 					};
+
+					if (temp_pion.old_y > worst_y)
+					{
+						worst_y = temp_pion.old_y;								// trouve le pion le plus éloigné de l'ennemi ( pour aider au remplacement dans le vecteur)
+					};
+
 
 				}
 				else
@@ -707,7 +731,7 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 
 			temp_pion = pion_vector_ordi.at(i);
 			temp_pion.score = -1000;
-			temp_pion.move = -1;
+			temp_pion.move = 0;
 			pion_temp_vector.push_back(temp_pion);						// sauvegarde dans vecteur temporaire
 		};
 
@@ -729,7 +753,7 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 
 			temp_pion = pion_vector_humain.at(i);
 			temp_pion.score = -1000;
-			temp_pion.move = -1;
+			temp_pion.move = 0;
 			pion_temp_vector.push_back(temp_pion);						// sauvegarde dans vecteur temporaire
 		};
 
@@ -857,7 +881,7 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 			pion_1.niveau = 0;
 			pion_1.dame = false;
 			pion_1.score = -1000;
-			pion_1.move = -1;												// move = -1 indique qu'aucun move n'a été fait.  Donc ne pas tenir compte du score.
+			pion_1.move = 0;												
 			pion_1.removed = false;
 			pion_vector_ordi.push_back(pion_1);
 		};
@@ -874,7 +898,7 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 			pion_1.niveau = 0;
 			pion_1.dame = false;
 			pion_1.score = -1000;
-			pion_1.move = -1;												// move = -1 indique qu'aucun move n'a été fait.  Donc ne pas tenir compte du score.
+			pion_1.move = 0;												
 			pion_1.removed = false;	
 			pion_vector_ordi.push_back(pion_1);
 		};
@@ -891,7 +915,7 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 			pion_1.niveau = 0;
 			pion_1.dame = false;
 			pion_1.score = -1000;
-			pion_1.move = -1;												// move = -1 indique qu'aucun move n'a été fait.  Donc ne pas tenir compte du score.
+			pion_1.move = 0;												
 			pion_1.removed = false;
 			pion_vector_ordi.push_back(pion_1);
 		};
@@ -908,7 +932,7 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 			pion_1.niveau = 0;
 			pion_1.dame = false;
 			pion_1.score = -1000;
-			pion_1.move = -1;												// move = -1 indique qu'aucun move n'a été fait.  Donc ne pas tenir compte du score.
+			pion_1.move = 0;												
 			pion_1.removed = false;
 			pion_vector_ordi.push_back(pion_1);
 		};
@@ -985,7 +1009,7 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 			pion_1.niveau = 0;
 			pion_1.dame = false;
 			pion_1.score = -1000;
-			pion_1.move = -1;												// move = -1 indique qu'aucun move n'a été fait.  Donc ne pas tenir compte du score.	
+			pion_1.move = 0;													
 			pion_1.removed = false;						
 			pion_vector_humain.push_back(pion_1);
 		};
@@ -1002,7 +1026,7 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 			pion_1.niveau = 0;
 			pion_1.dame = false;
 			pion_1.score = -1000;
-			pion_1.move = -1;												// move = -1 indique qu'aucun move n'a été fait.  Donc ne pas tenir compte du score.
+			pion_1.move = 0;												
 			pion_1.removed = false;
 			pion_vector_humain.push_back(pion_1);
 		};
@@ -1019,7 +1043,7 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 			pion_1.niveau = 0;
 			pion_1.dame = false;
 			pion_1.score = -1000;
-			pion_1.move = -1;												// move = -1 indique qu'aucun move n'a été fait.  Donc ne pas tenir compte du score.
+			pion_1.move = 0;												
 			pion_1.removed = false;
 			pion_vector_humain.push_back(pion_1);
 		};
@@ -1037,7 +1061,7 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 				pion_1.niveau = 0;
 				pion_1.dame = false;
 				pion_1.score = -1000;
-				pion_1.move = -1;																	// move = -1 indique qu'aucun move n'a été fait.  Donc ne pas tenir compte du score.
+				pion_1.move = 0;																	
 				pion_1.removed = false;
 			
 			pion_vector_humain.push_back(pion_1);
@@ -1108,7 +1132,7 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 
 		// Evalue si la nouvelle position est libre et qu'on reste dans les limites du jeu
 		// Si on est dans les limites, on vérifie si on peut bouger (destination libre).  Si on peut bouger, on retourne un pion avec la nouvelle position et les coordonnées du pion sont mises à jour.		
-		// Si on est hors limites, alors on retourne move = -1 
+		// Si on est hors limites, alors on retourne move = pion_min 
 		// Si on reste dans les limites et que move>0, alors les coordonnées new_y, new_y contiennent la nouvelle position du pion.  old_x, old_y contiennent la position originale.
 		// Si le move attérit sur un pion ennemi et que la case suivante est libre, alors on peut passer par dessus le pion ennemi (double delta_x, delta_y) et le retirer du jeu.  
 		// Restera à retirer le pion ennemi.
@@ -1521,7 +1545,7 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 			pion_1.niveau = 0;
 			pion_1.dame = false;
 			pion_1.score = -1000;
-			pion_1.move = -1;												// move = -1 indique qu'aucun move n'a été fait.  Donc ne pas tenir compte du score.
+			pion_1.move = 0;												
 			pion_1.removed = false;
 			
 			
