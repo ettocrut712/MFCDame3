@@ -134,7 +134,7 @@ public:
 	int max_niveau = 2;
 	int max_grid_size = 10;						// grille de 10 par 10 max (selon le web, c'est le grid pour un jeu de dame)
 
-	int m_nbre_pion_meilleurs = 7;
+	int unsigned m_nbre_pion_meilleurs = 7;
 
 	// OPERATIONS SUR LE vecteur DES MOUVEMENTS DE PIONS
 

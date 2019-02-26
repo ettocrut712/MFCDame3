@@ -1453,17 +1453,7 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 		m_pion.removed_y = pion_1.removed_y;
 
 
-#ifdef _DEBUG
-		if (m_pion.ID == m_pion.removed_ID)
-		{
-			m_pion.ID = m_pion.ID;
 
-		};
-
-
-		
-
-#endif
 
 		dx = m_delta_X;
 		dy = m_delta_y;
@@ -1509,20 +1499,7 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 				/***********************************************************/
 			};
 
-#ifdef _DEBUG
 
-
-		if (m_pion.ID > 0)
-		{
-			if (m_pion.new_y <= (m_pion.ID - 1) / 5)
-				m_pion.new_y = m_pion.new_y;
-		}
-		else
-		{
-			if (m_pion.new_y >= 9 - (-m_pion.ID - 1) / 5)
-				m_pion.new_y = m_pion.new_y;
-		};
-#endif
 
 		if (m_pion.new_x > -1 && m_pion.new_x < max_grid_size && m_pion.new_y> -1 && m_pion.new_y < max_grid_size)		// Vérifie si le pion est dans les limites de la grille de jeu
 
@@ -1534,33 +1511,14 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 																					// Si a*b < 0: les deux sont ennemis (polarité (+/-) des ID sont différents.
 																					// Si a*b = 0, alors la case destination est vide (ID=0).
 																					// Si a*b > 0 alors le pion et la case sont des joueurs de la même équipe (même polarité).
-#ifdef _DEBUG
-			
 
-			if (m_pion.ID > 0)
-			{
-				if (m_pion.new_y <= (m_pion.ID - 1) / 5)
-					m_pion.new_y = m_pion.new_y;
-			}
-			else
-			{
-				if (m_pion.new_y >= 9 - (-m_pion.ID - 1) / 5)
-					m_pion.new_y = m_pion.new_y;
-			};
-#endif
 
 			if (c == 0)																
 			{
 				m_pion.hasMoved = TRUE;												// grid[m_pion.new_x][m_pion.new_y].ID = 0, alors case est vide.
 			
 
-#ifdef _DEBUG
-				if (m_pion.ID == m_pion.removed_ID)
-				{
-					m_pion.ID = m_pion.ID;
 
-				};
-#endif
 
 
 
@@ -1582,13 +1540,7 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 				m_pion.removed = FALSE;
 
 				
-#ifdef _DEBUG
-				if (m_pion.ID == m_pion.removed_ID)
-				{
-					m_pion.ID = m_pion.ID;
 
-				};
-#endif
 
 
 				return m_pion;
@@ -1635,20 +1587,7 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 
 				};  // fin : switch(move)
 				
-#ifdef _DEBUG
 
-
-				if (m_pion.ID > 0)
-				{
-					if (m_pion.new_y <= (m_pion.ID - 1) / 5)
-						m_pion.new_y = m_pion.new_y;
-				}
-				else
-				{
-					if (m_pion.new_y >= 9 - (-m_pion.ID - 1) / 5)
-						m_pion.new_y = m_pion.new_y;
-				};
-#endif
 
 				if (m_pion.new_x > -1 && m_pion.new_x < max_grid_size && m_pion.new_y> -1 && m_pion.new_y < max_grid_size)		
 																				// Vérifie si le pion est dans les limites de la grille de jeu
@@ -1667,13 +1606,7 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 						m_pion.new_y = pion_1.actual_y;
 						m_pion.removed = FALSE;
 						m_pion.hasMoved = FALSE;
-#ifdef _DEBUG
-						if (m_pion.ID == m_pion.removed_ID)
-						{
-							m_pion.ID = m_pion.ID;
 
-						};
-#endif
 						
 						return m_pion;									
 					}; 
@@ -1687,13 +1620,7 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 					m_pion.removed = FALSE;
 					m_pion.hasMoved = FALSE;
 
-#ifdef _DEBUG
-					if (m_pion.ID == m_pion.removed_ID)
-					{
-						m_pion.ID = m_pion.ID;
 
-					};
-#endif
 					return m_pion;
 
 				};//fin: if (pion dans limites du jeu)
@@ -1709,22 +1636,10 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 		m_pion.new_y = pion_1.actual_y;
 		m_pion.removed = FALSE;
 		m_pion.hasMoved = FALSE;
-#ifdef _DEBUG
-		if (m_pion.ID == m_pion.removed_ID)
-		{
-			m_pion.ID = m_pion.ID;
 
-		};
-#endif
 		
 
-#ifdef _DEBUG
-		if (m_pion.ID == m_pion.removed_ID)
-		{
-			m_pion.ID = m_pion.ID;
 
-		};
-#endif
 		return m_pion;												
 		};
 		
@@ -1820,7 +1735,7 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 
 	int CGrid::GetPionScore(pion pionID)
 	{
-		int score;
+		
 		int unsigned i;
 		if (pionID.ID > 0)												// ID >0 -> pion ordi  , ID < 0 -> pion_humain
 		{
