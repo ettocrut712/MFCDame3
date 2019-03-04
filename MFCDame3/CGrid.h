@@ -117,8 +117,9 @@ public:
 	int GetScoreGridOrdi();							// test ok
 	int GetScoreGridHum();							// test ok
 	void ComptePionsGrid();							// test ok
-	int CalculScoreGrid(CGrid::pion &lePion);
-	
+	int CalculScoreGrid_max(CGrid::pion &lePion);
+	int CalculScoreGrid_min(CGrid::pion &lePion);
+
 	// MOUVEMENT DES PIONS
 
 	

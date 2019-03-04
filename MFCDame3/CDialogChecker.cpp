@@ -21,6 +21,8 @@ void CDialogChecker::OnPaint()
 					   // TODO: Add your message handler code here
 					   // Do not call CDialog::OnPaint() for painting messages
 	
+	CString le_string;
+	CRect le_rectangle;
 
 	int x, y;
 	CGrid::pion pion;
@@ -30,10 +32,15 @@ void CDialogChecker::OnPaint()
 	int unsigned sizeVect_ordi, sizeVect_humain;
 	//CClientDC dc(this);
 	CBrush brosse_ordi, brosse_humain;
+	
 
-	brosse_ordi.CreateSolidBrush(RGB(255, 0, 0));
-	brosse_humain.CreateSolidBrush(RGB(0, 0, 0));
-
+	brosse_ordi.CreateSolidBrush(RGB(255, 0, 0));		// rouge
+	brosse_humain.CreateSolidBrush(RGB(0, 0, 0));		// noir
+	
+	CPen crayon_noir, crayon_blanc;
+	crayon_noir.CreatePen(PS_SOLID, 1,RGB(0,0,0));  // noir
+	crayon_blanc.CreatePen(PS_SOLID, 1, RGB(255, 255, 255));  //blanc
+	
 	CPoint p1;
 
 	int unsigned ID;
@@ -84,6 +91,14 @@ void CDialogChecker::OnPaint()
 		lower = (origine_y + hauteur) - hauteur / 10 * pion.actual_y;
 
 		dc.Ellipse(left, upper, right, lower);
+		dc.SelectObject(crayon_blanc);
+		//dc.MoveTo(left, lower);
+		
+		le_rectangle.SetRect(left, upper+hauteur/40, right, lower);
+
+		le_string.Format(_T("%2d"), pion.ID);
+		dc.DrawText(le_string, le_rectangle, DT_CENTER);
+
 
 	};
 
@@ -99,6 +114,14 @@ void CDialogChecker::OnPaint()
 		lower = (origine_y + hauteur) - hauteur / 10 * pion.actual_y;
 
 		dc.Ellipse(left, upper, right, lower);
+
+		dc.SelectObject(crayon_blanc);
+		//dc.MoveTo(left, lower);
+
+		le_rectangle.SetRect(left, upper + hauteur / 40, right, lower);
+
+		le_string.Format(_T("%2d"), pion.ID);
+		dc.DrawText(le_string, le_rectangle, DT_CENTER);
 	};
 
 
