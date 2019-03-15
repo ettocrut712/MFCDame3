@@ -4,6 +4,10 @@
 
 CDialogChecker::CDialogChecker()
 {
+	m_origine_X = 0;
+	m_origine_Y = 0;
+	m_destination_X = 0;
+	m_destination_Y = 0;
 }
 
 
@@ -12,6 +16,9 @@ CDialogChecker::~CDialogChecker()
 }
 BEGIN_MESSAGE_MAP(CDialogChecker, CDialog)
 	ON_WM_PAINT()
+	ON_WM_MOUSEMOVE()
+	ON_WM_LBUTTONDOWN()
+	ON_WM_LBUTTONUP()
 END_MESSAGE_MAP()
 
 
@@ -45,36 +52,33 @@ void CDialogChecker::OnPaint()
 
 	int unsigned ID;
 
-	int hauteur = 400;
-	int largeur = hauteur;
-	int origine_x = 50;
-	int origine_y = 50;
+	
 	int left, right, upper, lower;
 
-	p1.x = origine_x;
-	p1.y = origine_y;
+	p1.x = grid_origine_x;
+	p1.y = grid_origine_y;
 	dc.MoveTo(p1.x, p1.y);
 
 	
 
 	// Dessine grille de jeu
 
-	for (x = origine_x; x <= origine_x + largeur; x = x + largeur/10)
+	for (x = grid_origine_x; x <= grid_origine_x + largeur; x = x + largeur/10)
 	{
 
 		p1.x = x;
-		p1.y = origine_y;
+		p1.y = grid_origine_y;
 		dc.MoveTo(p1.x, p1.y);
-		p1.y = origine_y + hauteur;
+		p1.y = grid_origine_y + hauteur;
 		dc.LineTo(p1.x, p1.y);
 	};
 
-	for (y = origine_y; y <= origine_y + hauteur; y = y + hauteur/10)
+	for (y = grid_origine_y; y <= grid_origine_y + hauteur; y = y + hauteur/10)
 	{
-		p1.x = origine_x;
+		p1.x = grid_origine_x;
 		p1.y = y;
 		dc.MoveTo(p1.x, p1.y);
-		p1.x = origine_x + largeur;
+		p1.x = grid_origine_x + largeur;
 		dc.LineTo(p1.x, p1.y);
 
 	};
@@ -85,10 +89,10 @@ void CDialogChecker::OnPaint()
 	for (ID = 0; ID < sizeVect_ordi; ID++)
 	{
 		pion = m_vector_grid_ordi.at(ID);
-		left = origine_x + largeur / 10 * pion.actual_x;
-		right = origine_x + largeur / 10 * (pion.actual_x + 1);
-		upper = (origine_y + hauteur) - hauteur / 10 * (pion.actual_y + 1);
-		lower = (origine_y + hauteur) - hauteur / 10 * pion.actual_y;
+		left = grid_origine_x + largeur / 10 * pion.actual_x;
+		right = grid_origine_x + largeur / 10 * (pion.actual_x + 1);
+		upper = (grid_origine_y + hauteur) - hauteur / 10 * (pion.actual_y + 1);
+		lower = (grid_origine_y + hauteur) - hauteur / 10 * pion.actual_y;
 
 		dc.Ellipse(left, upper, right, lower);
 		dc.SelectObject(crayon_blanc);
@@ -99,7 +103,6 @@ void CDialogChecker::OnPaint()
 		le_string.Format(_T("%2d"), pion.ID);
 		dc.DrawText(le_string, le_rectangle, DT_CENTER);
 
-
 	};
 
 	sizeVect_humain = m_vector_grid_humain.size();
@@ -108,10 +111,10 @@ void CDialogChecker::OnPaint()
 	{
 
 		pion = m_vector_grid_humain.at(ID);
-		left = origine_x + largeur / 10 * pion.actual_x;
-		right = origine_x + largeur / 10 * (pion.actual_x + 1);
-		upper = (origine_y + hauteur) - hauteur / 10 * (pion.actual_y + 1);
-		lower = (origine_y + hauteur) - hauteur / 10 * pion.actual_y;
+		left = grid_origine_x + largeur / 10 * pion.actual_x;
+		right = grid_origine_x + largeur / 10 * (pion.actual_x + 1);
+		upper = (grid_origine_y + hauteur) - hauteur / 10 * (pion.actual_y + 1);
+		lower = (grid_origine_y + hauteur) - hauteur / 10 * pion.actual_y;
 
 		dc.Ellipse(left, upper, right, lower);
 
@@ -124,16 +127,10 @@ void CDialogChecker::OnPaint()
 		dc.DrawText(le_string, le_rectangle, DT_CENTER);
 	};
 
+	dc.SelectObject(crayon_noir);
 
-	
-
-
-	
-
-
-
-
-	
+	dc.MoveTo(m_origine_X, m_origine_Y);
+	dc.LineTo(m_destination_X, m_destination_Y);
 }
 
 
@@ -148,3 +145,58 @@ void CDialogChecker::TransferPionsToDisplay(std::vector <CGrid::pion>  vecteur_p
 }
 
 
+
+
+void CDialogChecker::OnMouseMove(UINT nFlags, CPoint point)
+{
+	// TODO: Add your message handler code here and/or call default
+
+
+	if ((nFlags & MK_LBUTTON) == MK_LBUTTON)
+	{
+
+		CClientDC dc(this);
+		Invalidate();
+
+		m_destination_X = point.x;
+		m_destination_Y = point.y;
+
+		dc.SetPixel(point.x, point.y, RGB(0, 0, 0));
+
+		dc.MoveTo(m_origine_X, m_origine_Y);
+		dc.LineTo(point.x, point.y);
+	};
+	CDialog::OnMouseMove(nFlags, point);
+}
+
+
+void CDialogChecker::OnLButtonDown(UINT nFlags, CPoint point)
+{
+	// TODO: Add your message handler code here and/or call default
+	int case_origine_x, case_origine_y;
+
+	m_origine_X = point.x;
+	m_origine_Y = point.y;
+
+	case_origine_x = (m_destination_X - grid_origine_x) / (hauteur / 10);
+	case_origine_y = 9 - (m_destination_Y - grid_origine_y) / (largeur / 10);
+
+	CDialog::OnLButtonDown(nFlags, point);
+}
+
+
+void CDialogChecker::OnLButtonUp(UINT nFlags, CPoint point)
+{
+	// TODO: Add your message handler code here and/or call default
+
+	int case_destination_x, case_destination_y;
+
+	m_destination_X = point.x;
+	m_destination_Y = point.y;
+	
+	case_destination_x = (m_destination_X - grid_origine_x) / (hauteur/10);
+	case_destination_y = 9-(m_destination_Y - grid_origine_y) / (largeur/10);
+
+
+	CDialog::OnLButtonUp(nFlags, point);
+}
