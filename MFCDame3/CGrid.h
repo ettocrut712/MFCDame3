@@ -19,14 +19,14 @@ public:
 	struct pion
 	{
 		long int ID=0;							// ID du pion.  ID > 0 = ordi. ID < 0 = humain (l'autre  joueur).
-		int old_x=0;							// coordonnees X (origine lors d'un déplacement)
-		int old_y=0;							// coordonnees Y
+		int actual_x=0;							// coordonnees X (origine lors d'un déplacement)
+		int actual_y=0;							// coordonnees Y
 		int new_x=0;							// coordonnees X (destination lors d'un déplacement)
 		int new_y=0;							// coordonnees Y
 		
 
 		bool hasMoved = FALSE;					// TRUE: le pion s'est déplacé,  FALSE: le pion ne s'est pas déplacé.  Utilisé lors de l'évaluation des mouvements possibles des pions.
-												// Si le pion ne s'est pas déplacé, alors sa position est dans old_x, old_y.  Si le pion s'est déplacé, sa position est dans new_x, new_y.
+												// Si le pion ne s'est pas déplacé, alors sa position est dans actual_x, actual_y.  Si le pion s'est déplacé, sa position est dans new_x, new_y.
 
 		int niveau =0;							// indique à quel niveau ( cycle min/max) le pion a été déplacé.  Si plusieurs pions sont déplacés lorsque au même niveau, ils ont tous le "niveau" identique. 
 		bool dame = FALSE;  					// si le pion devient une dame, alors dame = TRUE;
@@ -58,23 +58,29 @@ public:
 
 	// OPERATIONS SUR LES PIONS
 
-	void CreatePionsOrdi();							// test ok
-	void CreatePionHumain();						// test ok
+	void CreatePionsOrdi();							
+	void CreatePionHumain();							
 
-	void TransferTousPionToMainGrid();					// test ok
+	void TransferTousPionToMainGrid();					
 
 
-	//void RetirePionGrid(int pionID, int main_sub);	// test ok
-	void RetirePionJeu(pion pionID);					// test ok  Quand l'analyse est complétée, on retire un pion définitivement du jeu ici.
+	//void RetirePionGrid(int pionID, int main_sub);	
+	void RetirePionJeu(pion pionID);					//   Quand l'analyse est complétée, on retire un pion définitivement du jeu ici.
 	
-	void AjoutPionGrid_old(pion lePion);				// Utilisé pour remettre un pion en jeu après que le calcul l'impliquant soit terminé.
-	void AjoutPionGrid_new(pion lePion);				// Utilisé pour remettre un pion en jeu après que le calcul l'impliquant soit terminé.
-	pion RetirePionCalcul(pion lePion);				// Utilisé pour retirer un pion du jeu lors du calcul (pion retiré lors du calcul, pour évaluation par minimax)
-	void AjustePionVectorGrid(pion lePion);
+	void AjoutPion_to_Grid__at_actual_xy(pion lePion);				// Utilisé pour remettre un pion en jeu après que le calcul l'impliquant soit terminé.
+	void AjoutPion_to_Grid__at_new_xy(pion lePion);				// Utilisé pour remettre un pion en jeu après que le calcul l'impliquant soit terminé.
+	void AjoutPionGrid_removed(pion lePion);			// Utilisé pour remettre en jeu un pion qui a été enlevé lors des calculs.
 	
+	
+	pion RetirePionCalcul(pion lePion);					// Utilisé pour retirer un pion du jeu lors du calcul (pion retiré lors du calcul, pour évaluation par minimax)
+	void AjustePion_in_VectorGrid_to_new_xy(pion lePion);				//Utilisé pour corriger un pion qui s'est déplacé.  new x,y -> old x,y
+	void AjustePion_in_VectorGrid_to_removed_xy(pion lePion);		// Utilisé pour corriger le vecteur "pion" pour un pion qui a été retiré et qu'on remet en jeu. removed x,y -> old x,y
+	void AjustePion_in_VectorGrid_to_actual_xy(pion lePion);			// Utilisé pour corriger le vecteur "pion" pour un pion qui a été déplacé et qu'on remet à son origine. (lePion. old x,y -> old x,y)
+
 
 	void ResetScorePions();
 	int SetPionScore(pion pionID);
+	int GetPionScore(pion pionID);
 
 	int GetPionVectOrdiSize();
 	int GetPionVectHumSize();
@@ -111,7 +117,8 @@ public:
 	int GetScoreGridOrdi();							// test ok
 	int GetScoreGridHum();							// test ok
 	void ComptePionsGrid();							// test ok
-	int CalculScoreGrid(CGrid::pion &lePion);
+	int CalculScoreGrid_max(CGrid::pion &lePion);
+	int CalculScoreGrid_min(CGrid::pion &lePion);
 
 	// MOUVEMENT DES PIONS
 
@@ -127,6 +134,8 @@ public:
 	
 	int max_niveau = 2;
 	int max_grid_size = 10;						// grille de 10 par 10 max (selon le web, c'est le grid pour un jeu de dame)
+
+	int unsigned m_nbre_pion_meilleurs = 7;
 
 	// OPERATIONS SUR LE vecteur DES MOUVEMENTS DE PIONS
 
