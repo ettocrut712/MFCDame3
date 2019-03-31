@@ -1167,8 +1167,8 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 
 		// CODE DEBUG ******************************************
 
-		pion_1.ID = 15;
-		pion_1.actual_x = 7;
+/*		pion_1.ID = 15;
+		pion_1.actual_x = 3;
 		pion_1.actual_y = 3;
 		pion_1.new_x = pion_1.actual_x;
 		pion_1.new_y = pion_1.actual_y;
@@ -1195,7 +1195,7 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 
 
 		pion_1.ID = 20;
-		pion_1.actual_x = 9;
+		pion_1.actual_x = 5;
 		pion_1.actual_y = 3;
 		pion_1.new_x = pion_1.actual_x;
 		pion_1.new_y = pion_1.actual_y;
@@ -1209,7 +1209,7 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 
 		//*****************************************************
 
-	/*	for (i = 1; i < max_grid_size/2+1; i++)								// crée les pions de la rangée "0"
+*/		for (i = 1; i < max_grid_size/2+1; i++)								// crée les pions de la rangée "0"
 		{
 
 			pion_1.ID = i;
@@ -1276,7 +1276,7 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 			pion_1.removed = false;
 			pion_vector_ordi.push_back(pion_1);
 		};
-*/
+
 		
 	}
 
@@ -1288,7 +1288,7 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 		pion_vector_humain.clear();
 
 		// DEBUG CODE ***************************************
-		pion_1.ID = -18;
+/*		pion_1.ID = -18;
 		pion_1.actual_x = 5;
 		pion_1.actual_y = 5;
 		pion_1.new_x = pion_1.actual_x;
@@ -1329,15 +1329,14 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 		pion_1.move = -1;												// move = -1 indique qu'aucun move n'a été fait.  Donc ne pas tenir compte du score.	
 		pion_1.removed = false;
 		pion_vector_humain.push_back(pion_1);
-
-		// DEBUG CODE ***************************************
+*/	// DEBUG CODE ***************************************
 
 
 
 
 
 		
-	/*	for (i = 1; i < max_grid_size / 2 + 1; i++)							// crée les pions de la rangée "0"
+		for (i = 1; i < max_grid_size / 2 + 1; i++)							// crée les pions de la rangée "0"
 		{
 
 			pion_1.ID = -i;
@@ -1407,7 +1406,7 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 			pion_vector_humain.push_back(pion_1);
 		};
 
- */
+ 
 
 	}
 
@@ -1908,4 +1907,28 @@ void CGrid::RetirePionJeu(pion pionID)			// Retire  définitivement le pion du je
 	
 	};
 
-	
+	CGrid::pion CGrid::TrouvePionAt_XY(int case_x, int case_y)
+	{
+		CGrid::pion lePion;
+
+		int sizeVect = 0;
+		
+		sizeVect = sizeVect = GetPionVectHumSize();
+		int i =0;
+
+		for (i = 0; i < sizeVect; i ++)
+		{
+			lePion = GetPionFromVectHumain(i);				//retourne le pion "humain" pion(pionID = i)
+
+			if (lePion.actual_x == case_x && lePion.actual_y == case_y)
+				return lePion;
+		};
+
+		// si on se rend ici, c'est parce que l'utilisateur a cliqué sur un pion ORDI au lieu d'un pion Humain...
+
+		lePion.ID = 999;		// indique que le pion n'a pas été trouvé...
+
+		return lePion;
+
+		
+	};

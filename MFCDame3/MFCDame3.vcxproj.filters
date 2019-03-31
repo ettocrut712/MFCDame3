@@ -33,9 +33,6 @@
     <ClInclude Include="CGrid.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CDialogChecker.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MFCDame3.cpp">
@@ -50,7 +47,7 @@
     <ClCompile Include="CGrid.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CDialogChecker.cpp">
+    <ClCompile Include="CnewDialogChecker.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

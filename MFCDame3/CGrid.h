@@ -60,6 +60,7 @@ public:
 
 	void CreatePionsOrdi();							
 	void CreatePionHumain();							
+	pion TrouvePionAt_XY(int x, int y);				// On fournit des coordonnées de case (x,y) et la fonction retourne le pion qui s'y trouve.
 
 	void TransferTousPionToMainGrid();					
 
@@ -132,7 +133,7 @@ public:
 
 	pion grid_main[10][10];						//grid principal avant changement.  PAS D'UTILISATION POUR LE MOMENT. 
 	
-	int max_niveau = 2;
+	int max_niveau = 4;
 	int max_grid_size = 10;						// grille de 10 par 10 max (selon le web, c'est le grid pour un jeu de dame)
 
 	int unsigned m_nbre_pion_meilleurs = 7;
