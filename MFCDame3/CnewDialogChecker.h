@@ -4,12 +4,12 @@
 #include "CGrid.h"
 
 
-class CDialogChecker :
+class CnewDialogChecker :
 	public CDialog
 {
 public:
-	CDialogChecker();
-	~CDialogChecker();
+	CnewDialogChecker();
+	~CnewDialogChecker();
 	DECLARE_MESSAGE_MAP()
 	afx_msg void OnPaint();
 
@@ -18,16 +18,20 @@ public:
 
 public:	void TransferPionsToDisplay(std::vector <CGrid::pion>  vecteur_pion_humain, std::vector <CGrid::pion> vecteur_pion_ordi);
 		
-		//************************** nouveau code ******
 		
-
-		//**********************************************
-
 		afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 		int m_origine_X;
 		int m_origine_Y;
 		int m_destination_X;
 		int m_destination_Y;
+
+		//*******************nouveau code
+
+		bool m_HumainBouge = false;
+
+
+		//*******************************
+
 		int hauteur = 400;
 		int largeur = hauteur;
 		int grid_origine_x = 50;

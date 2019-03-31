@@ -183,7 +183,6 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="CDialogChecker.h" />
     <ClInclude Include="CGrid.h" />
     <ClInclude Include="MFCDame3.h" />
     <ClInclude Include="MFCDame3Dlg.h" />
@@ -192,8 +191,8 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CDialogChecker.cpp" />
     <ClCompile Include="CGrid.cpp" />
+    <ClCompile Include="CnewDialogChecker.cpp" />
     <ClCompile Include="MFCDame3.cpp" />
     <ClCompile Include="MFCDame3Dlg.cpp" />
     <ClCompile Include="stdafx.cpp">
